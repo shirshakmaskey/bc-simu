@@ -5,12 +5,12 @@ import lombok.Getter;
 
 @Getter
 public class Block {
-    private int index;
+    protected int index;
     private long timestamp;
     private String note;
-    private Transaction transactions[];
+    private Transaction[] transactions;
     private String prev_hash;
-    private String hash;
+    protected String hash;
     private int difficulty;
     private String nounce;
 
@@ -23,7 +23,7 @@ public class Block {
         this.hash = calcHash();
         this.nounce = nounce;
         this.difficulty = difficulty;
-        transactions = new Transaction[BLOCK_SIZE];
+        this.transactions = new Transaction[BLOCK_SIZE];
     }
 
     public void setNote(String note) {
@@ -42,5 +42,21 @@ public class Block {
 
     private String calcHash() {
         return Encryption.sha256(this.index + this.timestamp + this.note + Arrays.toString(this.transactions) + this.prev_hash);
+    }
+
+    public String getIndex() {
+        // yo function yaha huna parne tara chhainaS
+        return "success";
+    }
+
+    public long getTimestamp() {
+        //yaha bata timestamp matra pathaune jasto layo
+        return 0;
+    }
+
+    public Transaction[] getTransactions() {
+        //yo maile aafai banako ho
+        Transaction[] trxn =new Transaction();
+        return trxn;
     }
 }

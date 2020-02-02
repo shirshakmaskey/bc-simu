@@ -1,9 +1,11 @@
 import com.google.gson.GsonBuilder;
 
+import javax.management.openmbean.TabularDataSupport;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Blockchain {
+    private static final double MINING_REWARDS = 100;
     public static ArrayList<Block> bc = new ArrayList<>();
     // The blockchain is implemented as an ArrayList of Blocks
     public static ArrayList<Transaction> transactions = new ArrayList<>();
@@ -16,13 +18,16 @@ public class Blockchain {
     private static final int MAX_TRANSACTIONS_EACH_PERSON_EACH_EPOCH = 5;
     private final static int MAX_BLOCKS = 6;
     private final static int DIFFICULTY = 4;
+    //yo data type ho ki nai sure chhaina
+    private final static TabularDataSupport coinHolders_address = null;
 
     public static Block createGenesisBlock() {
-        return new Block(0, "\"Everything starts from here!\"", "0");
+        return new Block(0, "\"Everything starts from here!\"", "0",4);
     }
 
-    public static Block createNextBlock(Block prevBlock) {
-        return new Block(prevBlock.index + 1, transactions.toString(), prevBlock.hash);
+    public static Block createNextBlock(Block prevBlock, String nonce, int difficulty) {
+        //yaha bata transaction.toString() hatako chhu
+        return new Block(prevBlock.index + 1, prevBlock.hash, nonce, difficulty);
     }
 
     public static void printChain() {
@@ -55,7 +60,8 @@ public class Blockchain {
     }
 
     public static String getSender() {
-        return coinHolders_address.get((int) ((Math.random() * coinHolders_address.size())));
+        //string ma cast aafai gareko ho
+        return (String) coinHolders_address.get((int) ((Math.random() * coinHolders_address.size())));
     }
 
     public static String getRecipient(String sender) {
@@ -65,7 +71,8 @@ public class Blockchain {
             recipient = Encryption.sha256("coinHolder" + coinHolders_address.size());
         } else {
             do {
-                recipient = coinHolders_address.get((int) ((Math.random() * coinHolders_address.size())));
+                //yaha cast o string gareko ho
+                recipient = (String) coinHolders_address.get((int) ((Math.random() * coinHolders_address.size())));
             } while (recipient == null || recipient.equals(sender));
         }
 
@@ -110,6 +117,11 @@ public class Blockchain {
                 addCoinHolder(curr.getRecepientID());
             }
         }
+    }
+
+    private static void addCoinHolder(Object recepientID) {
+        //yo ni nabhako function ho
+        //afai banako
     }
 
     public static void retreiveVerifiedTxions(Transaction[] nextToBeConfirmed) {
@@ -157,7 +169,7 @@ public class Blockchain {
             result = false;
         }
 
-        return result;
+        return !result;
     }
 
     // this PoW algorithm tries to find an integer 'nounce',
@@ -165,10 +177,10 @@ public class Blockchain {
     // of leading 0's.
     public static String proofOFwork(long prevTimestamp) {
         int nounce = Integer.MIN_VALUE;
-        while (!numLeading0is(DIFFICULTY, Encryption.sha256("" + nounce + prevTimestamp))) {
+        while (numLeading0is(DIFFICULTY, Encryption.sha256("" + nounce + prevTimestamp))) {
             nounce++;
             if (nounce == Integer.MAX_VALUE
-                    && !numLeading0is(DIFFICULTY, Encryption.sha256("" + nounce + prevTimestamp))) {
+                    && numLeading0is(DIFFICULTY, Encryption.sha256("" + nounce + prevTimestamp))) {
                 prevTimestamp++;
                 nounce = Integer.MIN_VALUE;
             }
@@ -180,11 +192,11 @@ public class Blockchain {
     public static Block mine() {
         Block lastBlock = bc.get(bc.size() - 1);
         String miner_address = getMinerAddr();
-        String nounce;
+        String nonce;
         //get timestamp bhanne block class ma huna parne
-        nounce = proofOFwork(lastBlock.getTimestamp());
-        Block next = createNextBlock(lastBlock, nounce);
-        Transaction nextToBeConfirmed[] = new Transaction[Block.BLOCK_SIZE];
+        nonce = proofOFwork(lastBlock.getTimestamp());
+        Block next = createNextBlock(lastBlock, nonce, DIFFICULTY);
+        Transaction[] nextToBeConfirmed = new Transaction[Block.BLOCK_SIZE];
 
         // rewards to the miner will be the first txion
         nextToBeConfirmed[0] = new Transaction("System", miner_address, MINING_REWARDS, true);
@@ -196,7 +208,11 @@ public class Blockchain {
         return next;
     }
 
-    public static void main(String args[]) {
+    public static ArrayList<String> loadMiners(){
+        //yaha return miner ko array list ho
+    }
+
+    public static void main(String[] args) {
         Block newBlock = createGenesisBlock();
         bc.add(newBlock);
         //yo load miners bhanne function le miner ko id arraylist banauchhha aru kei kaam gardaina re tara yo chhaina
@@ -210,7 +226,7 @@ public class Blockchain {
 //          updateTransactions(newBlock);
         }
 
-        String blockchainJson = new GsonBuilder().setPrettyPrinting().create().toJson(blockchain);
+        String blockchainJson = new GsonBuilder().setPrettyPrinting().create().toJson(bc);
         System.out.println(blockchainJson);
     }
 
