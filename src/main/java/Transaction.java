@@ -8,14 +8,14 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class Transaction {
-    protected String senderID;
-    protected String recepientID;
-    protected double amount;
-    protected boolean verified;
+    private String senderID;
+    private String recipientID;
+    private double amount;
+    private boolean verified;
 
     public Transaction(String iID, String rID, double amt) {
         this.senderID = iID;
-        this.recepientID = rID;
+        this.recipientID = rID;
         this.amount = amt;
         this.verified = false;
     }
