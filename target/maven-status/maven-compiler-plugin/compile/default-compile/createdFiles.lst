@@ -1,4 +1,5 @@
 Blockchain.class
+Miner.class
 Transaction.class
 Encryption.class
 Block.class

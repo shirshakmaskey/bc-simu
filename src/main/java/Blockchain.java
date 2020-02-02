@@ -1,6 +1,5 @@
 import com.google.gson.GsonBuilder;
-import com.sun.java.util.jar.pack.FixedList;
-import jdk.internal.org.objectweb.asm.tree.InsnList;
+//import com.sun.java.util.jar.pack.ArrayList;
 
 import javax.management.openmbean.TabularDataSupport;
 import java.util.ArrayList;
@@ -195,7 +194,7 @@ public class Blockchain {
         Block lastBlock = bc.get(bc.size() - 1);
         //String miner_address = getMinerAddr();
         Miner.reset();
-        FixedList<Miner> miner_threads;
+        ArrayList<Miner> miner_threads = new ArrayList<>();
         for (String minersAddress : miners_address) {
             Miner mt = new Miner(minersAddress, lastBlock.getTimestamp(), DIFFICULTY);
             miner_threads.add(mt);
