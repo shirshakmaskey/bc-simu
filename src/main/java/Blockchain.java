@@ -56,7 +56,7 @@ public class Blockchain {
         double issBalance = getBalance(sender);
         double amount = ((int) (issBalance * Math.random() * 100)) / 100.0;
         String recipient = getRecipient(sender);
-        transactions.add(new Transaction(sender, recipient, amount));
+        transactions.add(new Transaction(sender, recipient, amount,true));
     }
 
     public static String getSender() {
@@ -210,6 +210,7 @@ public class Blockchain {
 
     public static ArrayList<String> loadMiners(){
         //yaha return miner ko array list ho
+        return new ArrayList<>();
     }
 
     public static void main(String[] args) {

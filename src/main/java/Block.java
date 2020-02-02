@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -56,7 +57,7 @@ public class Block {
 
     public Transaction[] getTransactions() {
         //yo maile aafai banako ho
-        Transaction[] trxn =new Transaction();
+        Transaction[] trxn = {};
         return trxn;
     }
 }

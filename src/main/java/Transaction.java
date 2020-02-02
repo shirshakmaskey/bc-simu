@@ -5,13 +5,14 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @ToString
 public class Transaction {
     private String senderID;
     private String recipientID;
     private double amount;
     private boolean verified;
+
+
 
     public Transaction(String iID, String rID, double amt,boolean verified) {
         this.senderID = iID;
