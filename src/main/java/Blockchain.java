@@ -1,4 +1,6 @@
 import com.google.gson.GsonBuilder;
+import com.sun.java.util.jar.pack.FixedList;
+import jdk.internal.org.objectweb.asm.tree.InsnList;
 
 import javax.management.openmbean.TabularDataSupport;
 import java.util.ArrayList;
@@ -191,19 +193,34 @@ public class Blockchain {
 
     public static Block mine() {
         Block lastBlock = bc.get(bc.size() - 1);
-        String miner_address = getMinerAddr();
-        String nonce;
-        //get timestamp bhanne block class ma huna parne
-        nonce = proofOFwork(lastBlock.getTimestamp());
-        Block next = createNextBlock(lastBlock, nonce, DIFFICULTY);
+        //String miner_address = getMinerAddr();
+        Miner.reset();
+        FixedList<Miner> miner_threads;
+        for (String minersAddress : miners_address) {
+            Miner mt = new Miner(minersAddress, lastBlock.getTimestamp(), DIFFICULTY);
+            miner_threads.add(mt);
+            mt.start();
+        }
+        for (Miner miner_thread : miner_threads) {
+            try {
+                miner_thread.join();
+            } catch (InterruptedException e) {
+                System.out.println("Thread interrupted.");
+            }
+        }
+        System.out.println();
+        miner_threads.removeAll(miner_threads);
+        //String nounce;
+        //nounce = proofOFwork(lastBlock.getTimestamp());
+        Block next = createNextBlock(lastBlock, Miner.final_nounce,4);
         Transaction[] nextToBeConfirmed = new Transaction[Block.BLOCK_SIZE];
-
+        String miner_address = miners_address.get(Miner.claimerID);
         // rewards to the miner will be the first txion
         nextToBeConfirmed[0] = new Transaction("System", miner_address, MINING_REWARDS, true);
         retreiveVerifiedTxions(nextToBeConfirmed);
-
         next.setTransactions(nextToBeConfirmed);
         next.setNote("This is Block #" + next.getIndex());
+        next.setHash();
 
         return next;
     }
