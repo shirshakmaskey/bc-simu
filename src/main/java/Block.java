@@ -60,4 +60,8 @@ public class Block {
         Transaction[] trxn = {};
         return trxn;
     }
+
+    public void setHash() {
+        //yo pani garechha
+    }
 }
